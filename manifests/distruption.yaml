@@ -1,0 +1,11 @@
+# disruption-budget.yaml
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: exam-app-budget
+  namespace: exam
+spec:
+  maxUnavailable: 1  # Maximum number of unavailable pods during disruptions
+  selector:
+    matchLabels:
+      app: tuto-app  # Replace with the labels used by your application pods

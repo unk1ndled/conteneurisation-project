@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mysql-service:
+    image: mysql:8
+    container_name: mysql-service
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456789
+      MYSQL_DATABASE: testdb
+    ports:
+      - "3306:3306"
+    networks:
+      - appnetwork
+    volumes:
+      - dbvol:/var/lib/mysql
+
+  spring-service:
+    image: unkindled1/spring-service:v5
+    container_name: spring-service
+    ports:
+      - "8080:8080"
+    networks:
+      - appnetwork
+    depends_on:
+      - mysql-service
+    environment:
+      SPRING_DATASOURCE_USERNAME: root
+      MYSQL_ROOT_PASSWORD: 123456789
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-service:3306/testdb?useSSL=false&allowPublicKeyRetrieval=true&allowEmptyPassword=yes&createDatabaseIfNotExist=true&autoReconnect=true
+
+  angular-frontend:
+    image: unkindled1/angular-frontend:v2
+    container_name: angular-frontend
+    ports:
+      - "4200:80"
+    networks:
+      - appnetwork
+    depends_on:
+      - spring-service
+
+volumes:
+  dbvol:
+    driver: local
+
+networks:
+  appnetwork:
+    driver: bridge

@@ -1,0 +1,11 @@
+# Fichier : resource-quota.yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-resources
+  namespace: exam
+spec:
+  hard:
+    pods: "10"  # Nombre maximum de pods
+    limits.cpu: "10"  # Maximum total CPU en millicores
+    limits.memory: 10Gi  # Maximum total mémoire
