@@ -1,23 +1,11 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: mysql-service
-  namespace: exam
-spec:
-  selector:
-    app: mysql
-  ports:
-    - protocol: TCP
-      port: 3306
-      targetPort: 3306
---- 
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mysql-statefulset
   namespace: exam
+  app: tuto-app
 spec:
-  serviceName: mysql  # Correction ici
+  serviceName: "mysql"
   replicas: 2
   selector:
     matchLabels:
@@ -31,16 +19,13 @@ spec:
       - name: mysql
         image: mysql:latest
         env:
-          - name: MYSQL_ROOT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: mysql-secret
-                key: MYSQL_ROOT_PASSWORD
-          - name: MYSQL_DATABASE
-            value: testdb
+        - name: MYSQL_ROOT_PASSWORD
+          value: "root"
+        - name: MYSQL_DATABASE
+          value: testdb
         ports:
-          - containerPort: 3306
-            name: db-port
+        - containerPort: 3306
+          name: mysql
         livenessProbe:
           exec:
             command:
@@ -63,14 +48,26 @@ spec:
           failureThreshold: 30
           periodSeconds: 5
         volumeMounts:
-        - name: mysql-data
+        - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
-
   volumeClaimTemplates:
   - metadata:
-      name: mysql-data
+      name: mysql-persistent-storage
     spec:
-      accessModes: ["ReadWriteOnce"]
+      accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
           storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+  namespace: exam
+spec:
+  selector:
+    app: mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
