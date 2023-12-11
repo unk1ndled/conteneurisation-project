@@ -4,7 +4,6 @@ kind: Service
 metadata:
   name: frontend-service
   namespace: exam
-  app: tuto-app
 spec:
   selector:
     app: frontend
@@ -20,7 +19,6 @@ kind: Deployment
 metadata:
   name: frontend-deployment
   namespace: exam
-  app: tuto-app
 spec:
   replicas: 2
   selector:

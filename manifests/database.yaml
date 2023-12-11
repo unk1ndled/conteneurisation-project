@@ -3,7 +3,6 @@ kind: StatefulSet
 metadata:
   name: mysql-statefulset
   namespace: exam
-  app: tuto-app
 spec:
   serviceName: "mysql"
   replicas: 2
